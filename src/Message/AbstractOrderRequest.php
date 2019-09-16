@@ -13,6 +13,14 @@ abstract class AbstractOrderRequest extends AbstractRequest
     use ItemDataTrait;
 
     /**
+     * @return bool|null
+     */
+    public function getAutoCapture()
+    {
+        return $this->getParameter('auto_capture');
+    }
+
+    /**
      * @return Address|null
      */
     public function getBillingAddress()
@@ -74,6 +82,18 @@ abstract class AbstractOrderRequest extends AbstractRequest
     public function getWidgetOptions()
     {
         return $this->getParameter('widget_options');
+    }
+
+    /**
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setAutoCapture(bool $value): self
+    {
+        $this->setParameter('auto_capture', $value);
+
+        return $this;
     }
 
     /**
@@ -184,6 +204,10 @@ abstract class AbstractOrderRequest extends AbstractRequest
             'purchase_currency' => $this->getCurrency(),
             'purchase_country' => $this->getPurchaseCountry(),
         ];
+
+        if (true === $this->getAutoCapture()) {
+            $data['auto_capture'] = true;
+        }
 
         if (null !== $locale = $this->getLocale()) {
             $data['locale'] = str_replace('_', '-', $locale);
